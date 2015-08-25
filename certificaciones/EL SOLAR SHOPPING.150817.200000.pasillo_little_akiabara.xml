@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<Metrics  SiteId="SOLAR" Sitename="EL SOLAR SHOPPING" DeviceId="12" Devicename="pasillo.littleakiabara">
+<Properties>
+<MacAddress>00:b0:9d:b8:54:4d</MacAddress>
+<IpAddress>192.0.0.41</IpAddress>
+<HostName>Cam-12080205</HostName>
+<HwPlatform>2300</HwPlatform>
+<Timezone>-3</Timezone>
+<DST>0</DST>
+<DeviceType>0</DeviceType>
+<SerialNumber>12080205</SerialNumber>
+</Properties>
+<ReportData  Interval="5">
+<Report  Date="2015-08-17">
+<Object  Id="0" DeviceId="12" Devicename="pasillo.littleakiabara" ObjectType="0" Name="pasillo.littleakiabara">
+<Count  StartTime="19:00:00" EndTime="19:05:00" Enters="6" Exits="14" Status="0"/>
+<Count  StartTime="19:05:00" EndTime="19:10:00" Enters="14" Exits="23" Status="0"/>
+<Count  StartTime="19:10:00" EndTime="19:15:00" Enters="7" Exits="11" Status="0"/>
+<Count  StartTime="19:15:00" EndTime="19:20:00" Enters="9" Exits="9" Status="0"/>
+<Count  StartTime="19:20:00" EndTime="19:25:00" Enters="14" Exits="19" Status="0"/>
+<Count  StartTime="19:25:00" EndTime="19:30:00" Enters="12" Exits="21" Status="0"/>
+<Count  StartTime="19:30:00" EndTime="19:35:00" Enters="7" Exits="11" Status="0"/>
+<Count  StartTime="19:35:00" EndTime="19:40:00" Enters="4" Exits="14" Status="0"/>
+<Count  StartTime="19:40:00" EndTime="19:45:00" Enters="7" Exits="13" Status="0"/>
+<Count  StartTime="19:45:00" EndTime="19:50:00" Enters="6" Exits="15" Status="0"/>
+<Count  StartTime="19:50:00" EndTime="19:55:00" Enters="3" Exits="10" Status="0"/>
+<Count  StartTime="19:55:00" EndTime="20:00:00" Enters="4" Exits="11" Status="0"/>
+</Object>
+</Report>
+</ReportData>
+</Metrics>

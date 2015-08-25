@@ -1,0 +1,32 @@
+[ec2-user@ip-10-185-240-176 inc]$ grep function functions.php | wc -l
+164
+--tenemos 162 definidas en ese archivo :-P
+
+
+--veamos ingresos_mall.php
+[ec2-user@ip-10-185-240-176 inc]$ grep function ingresos_mall.php
+
+include "functions.php";
+      function drawChart() {
+      function drawChart() {
+      curveType: 'function'
+      function drawChart() {
+      function drawChart() {
+    function drawVisualization() {
+      function drawChart() {
+function getthedate(){
+function goforit(){
+function countDown(){
+function startit(){
+
+-- cx a la db
+[ec2-user@ip-10-185-240-176 inc]$ grep pg_query ingresos_mall.php
+  $result_fechas = pg_query ($conexion, $sql_fechas)
+$result_rango = pg_query ($conexion, $sql_rango)
+$result_rankdia = pg_query ($conexion, $sql_rankdia)
+$result_x_franja = pg_query ($conexion, $sql_x_franja)
+$result_hora = pg_query ($conexion, $sql_hora)
+$result_x_acceso = pg_query ($conexion, $sql_accesos)
+$result_30days = pg_query ($conexion, $sql_30days)
+$result_eventos = pg_query ($conexion, $sql_eventos)
+

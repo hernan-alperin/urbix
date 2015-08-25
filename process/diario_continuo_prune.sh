@@ -1,0 +1,2 @@
+echo "Exportando datos de PRUNE, a EXCEL..."
+sh -C /opt/pdi-3.2.4.stable/kitchen.sh -file=/opt/pdi-3.2.4.stable/alertaspi/prune/diario_continuo.kjb -level=minimal >> /opt/pdi-3.2.4.stable/alertaspi/prune/diario_continuo_prune.log

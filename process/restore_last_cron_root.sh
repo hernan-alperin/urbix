@@ -1,0 +1,1 @@
+cat `ls -tr /data/bkp-crontab-* | tail -1` | crontab -u root

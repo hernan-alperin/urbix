@@ -1,0 +1,2 @@
+# Mata los procesos python.6 que estan corriendo
+killall -9 python

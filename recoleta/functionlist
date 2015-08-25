@@ -1,0 +1,23 @@
+278; 1255 31642 FUNCTION urbix filter_match(integer, timestamp without time zone) urbix
+279; 1255 31643 FUNCTION urbix fm_access_factor(integer, integer, integer, integer, integer) urbix
+280; 1255 31644 FUNCTION urbix fm_access_factor_customer(integer, integer, integer, integer, integer) urbix
+281; 1255 31645 FUNCTION urbix fm_branch_factor(integer, integer, integer, integer, integer) urbix
+282; 1255 31646 FUNCTION urbix fm_branch_factor_customer(integer, integer, integer, integer, integer) urbix
+283; 1255 31649 FUNCTION urbix fm_branch_factor_outside(integer, integer, integer, integer, integer) urbix
+284; 1255 31650 FUNCTION urbix fm_branch_imbalance_customer(integer, integer, integer, integer, integer) urbix
+285; 1255 31651 FUNCTION urbix fm_branch_random(integer, integer, integer, integer, integer) urbix
+286; 1255 31652 FUNCTION urbix fm_branch_random_factor(integer, integer, integer, integer, integer) urbix
+287; 1255 31653 FUNCTION urbix fm_company_factor(integer, integer, integer, integer, integer) urbix
+288; 1255 31654 FUNCTION urbix fm_factor(integer, integer, integer, integer, integer) urbix
+289; 1255 31655 FUNCTION urbix fm_ocupation(integer, integer, integer, integer, integer) urbix
+290; 1255 31656 FUNCTION urbix fm_ocupation_customer(integer, integer, integer, integer, integer) urbix
+291; 1255 31657 FUNCTION urbix fm_ocupation_random(integer, integer, integer, integer, integer) urbix
+292; 1255 31658 FUNCTION urbix fm_ocupation_real(integer, integer, integer, integer, integer) urbix
+293; 1255 31659 FUNCTION urbix fm_ocupation_real_customer(integer, integer, integer, integer, integer) urbix
+294; 1255 31662 FUNCTION urbix formula_engine() urbix
+295; 1255 31663 FUNCTION urbix get_formula_param(integer, integer, timestamp without time zone) urbix
+296; 1255 31664 FUNCTION urbix measure_calibrated() urbix
+3342; 0 0 COMMENT urbix FUNCTION measure_calibrated() urbix
+297; 1255 31665 FUNCTION urbix range_match(integer, boolean, timestamp without time zone) urbix
+298; 1255 31674 FUNCTION urbix sum_measure(integer, bkn_measure_data, bkn_measure) urbix
+299; 1255 31675 FUNCTION urbix sum_measure_customer(integer, bkn_measure_data, bkn_measure) urbix

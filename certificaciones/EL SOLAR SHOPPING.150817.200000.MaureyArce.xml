@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<Metrics  SiteId="SOLAR" Sitename="EL SOLAR SHOPPING">
+<Properties>
+<MacAddress>00:b0:9d:a9:88:df</MacAddress>
+<IpAddress>192.0.0.31</IpAddress>
+<Timezone>-3</Timezone>
+<DST>0</DST>
+<DeviceType>0</DeviceType>
+<SerialNumber>11110623</SerialNumber>
+</Properties>
+<ReportData  Interval="5">
+<Report  Date="2015-08-17">
+<Object  Id="0" DeviceId="5" Devicename="Puesto5" ObjectType="0" Name="Puesto5">
+<Count  StartTime="19:00:00" EndTime="19:05:00" Enters="33" Exits="23" Status="0"/>
+<Count  StartTime="19:05:00" EndTime="19:10:00" Enters="21" Exits="44" Status="0"/>
+<Count  StartTime="19:10:00" EndTime="19:15:00" Enters="35" Exits="37" Status="0"/>
+<Count  StartTime="19:15:00" EndTime="19:20:00" Enters="22" Exits="35" Status="0"/>
+<Count  StartTime="19:20:00" EndTime="19:25:00" Enters="15" Exits="30" Status="0"/>
+<Count  StartTime="19:25:00" EndTime="19:30:00" Enters="20" Exits="30" Status="0"/>
+<Count  StartTime="19:30:00" EndTime="19:35:00" Enters="31" Exits="28" Status="0"/>
+<Count  StartTime="19:35:00" EndTime="19:40:00" Enters="19" Exits="27" Status="0"/>
+<Count  StartTime="19:40:00" EndTime="19:45:00" Enters="25" Exits="19" Status="0"/>
+<Count  StartTime="19:45:00" EndTime="19:50:00" Enters="14" Exits="25" Status="0"/>
+<Count  StartTime="19:50:00" EndTime="19:55:00" Enters="21" Exits="31" Status="0"/>
+<Count  StartTime="19:55:00" EndTime="20:00:00" Enters="20" Exits="26" Status="0"/>
+</Object>
+<Object  Id="1" DeviceId="5" Devicename="Puesto5" ObjectType="0" Name="Nivel1">
+<Count  StartTime="19:00:00" EndTime="19:05:00" Enters="17" Exits="24" Status="0"/>
+<Count  StartTime="19:05:00" EndTime="19:10:00" Enters="19" Exits="20" Status="0"/>
+<Count  StartTime="19:10:00" EndTime="19:15:00" Enters="19" Exits="23" Status="0"/>
+<Count  StartTime="19:15:00" EndTime="19:20:00" Enters="9" Exits="26" Status="0"/>
+<Count  StartTime="19:20:00" EndTime="19:25:00" Enters="12" Exits="24" Status="0"/>
+<Count  StartTime="19:25:00" EndTime="19:30:00" Enters="7" Exits="15" Status="0"/>
+<Count  StartTime="19:30:00" EndTime="19:35:00" Enters="15" Exits="22" Status="0"/>
+<Count  StartTime="19:35:00" EndTime="19:40:00" Enters="11" Exits="7" Status="0"/>
+<Count  StartTime="19:40:00" EndTime="19:45:00" Enters="17" Exits="18" Status="0"/>
+<Count  StartTime="19:45:00" EndTime="19:50:00" Enters="9" Exits="19" Status="0"/>
+<Count  StartTime="19:50:00" EndTime="19:55:00" Enters="16" Exits="24" Status="0"/>
+<Count  StartTime="19:55:00" EndTime="20:00:00" Enters="8" Exits="17" Status="0"/>
+</Object>
+<Object  Id="2" DeviceId="5" Devicename="Puesto5" ObjectType="0" Name="izquierda">
+<Count  StartTime="19:00:00" EndTime="19:05:00" Enters="26" Exits="16" Status="0"/>
+<Count  StartTime="19:05:00" EndTime="19:10:00" Enters="8" Exits="18" Status="0"/>
+<Count  StartTime="19:10:00" EndTime="19:15:00" Enters="15" Exits="16" Status="0"/>
+<Count  StartTime="19:15:00" EndTime="19:20:00" Enters="17" Exits="10" Status="0"/>
+<Count  StartTime="19:20:00" EndTime="19:25:00" Enters="17" Exits="15" Status="0"/>
+<Count  StartTime="19:25:00" EndTime="19:30:00" Enters="12" Exits="10" Status="0"/>
+<Count  StartTime="19:30:00" EndTime="19:35:00" Enters="12" Exits="13" Status="0"/>
+<Count  StartTime="19:35:00" EndTime="19:40:00" Enters="13" Exits="11" Status="0"/>
+<Count  StartTime="19:40:00" EndTime="19:45:00" Enters="8" Exits="16" Status="0"/>
+<Count  StartTime="19:45:00" EndTime="19:50:00" Enters="7" Exits="7" Status="0"/>
+<Count  StartTime="19:50:00" EndTime="19:55:00" Enters="7" Exits="20" Status="0"/>
+<Count  StartTime="19:55:00" EndTime="20:00:00" Enters="26" Exits="9" Status="0"/>
+</Object>
+<Object  Id="3" DeviceId="5" Devicename="Puesto5" ObjectType="0" Name="derecha">
+<Count  StartTime="19:00:00" EndTime="19:05:00" Enters="17" Exits="9" Status="0"/>
+<Count  StartTime="19:05:00" EndTime="19:10:00" Enters="17" Exits="30" Status="0"/>
+<Count  StartTime="19:10:00" EndTime="19:15:00" Enters="24" Exits="16" Status="0"/>
+<Count  StartTime="19:15:00" EndTime="19:20:00" Enters="19" Exits="16" Status="0"/>
+<Count  StartTime="19:20:00" EndTime="19:25:00" Enters="21" Exits="15" Status="0"/>
+<Count  StartTime="19:25:00" EndTime="19:30:00" Enters="13" Exits="17" Status="0"/>
+<Count  StartTime="19:30:00" EndTime="19:35:00" Enters="22" Exits="9" Status="0"/>
+<Count  StartTime="19:35:00" EndTime="19:40:00" Enters="12" Exits="23" Status="0"/>
+<Count  StartTime="19:40:00" EndTime="19:45:00" Enters="22" Exits="7" Status="0"/>
+<Count  StartTime="19:45:00" EndTime="19:50:00" Enters="15" Exits="14" Status="0"/>
+<Count  StartTime="19:50:00" EndTime="19:55:00" Enters="24" Exits="9" Status="0"/>
+<Count  StartTime="19:55:00" EndTime="20:00:00" Enters="10" Exits="22" Status="0"/>
+</Object>
+</Report>
+</ReportData>
+</Metrics>
