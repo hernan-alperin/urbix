@@ -12,8 +12,8 @@ drop index if exists urbix.bkn_measure_time_hour;
 create index bkn_measure_time_hour on urbix.bkn_measure (date_part('hour',measure_time));
 
 
--- view meassures para tener acceso dinámico a las mediciones.
-create view meassures as
+-- view measures para tener acceso dinámico a las mediciones.
+create view measures as
 select sensor_id as s_id, type_code as s_ch, status, 
   measure_time as timestamp, original_value as original, value, original_value*factor_value as corrected
 from urbix.bkn_measure 
@@ -23,7 +23,7 @@ using (sensor_id, type_code)
 where measure_time between start_date and end_date 
 or start_date <= measure_time and end_date is null
 ;
--- ejemplo: select * from meassures where date(timestamp)='2015-06-22' order by timestamp, s_id, s_ch ;
+-- ejemplo: select * from measures where date(timestamp)='2015-06-22' order by timestamp, s_id, s_ch ;
 
 create view sensors as
 select sensor_id as s_id, description as sensor, access_code as a_id, branch_code as b_id, organization_code as c_id
@@ -165,7 +165,7 @@ from variables_sensors_companies
 create view variables_estimations as
 select variable, v_id, timestamp, sum(corrected)*factor as estimation
 from variables_sensors
-join meassures
+join measures
 using(s_id, s_ch)
 natural join variables_factors
 group by v_id, variable, timestamp, factor
@@ -175,20 +175,20 @@ group by v_id, variable, timestamp, factor
 -- check it out: 
 select * from variables_estimations where date(timestamp)='2015-07-10' and extract(hour from timestamp) between 10 and 24 and v_id=8 order by timestamp ;
 select * from variables_sensors where v_id=8; 
-select * from meassures where date(timestamp)='2015-07-10' and extract(hour from timestamp) between 10 and 24 and s_id=1 and s_ch=1 order by timestamp ; 
+select * from measures where date(timestamp)='2015-07-10' and extract(hour from timestamp) between 10 and 24 and s_id=1 and s_ch=1 order by timestamp ; 
 :
 select v_id, variable, round(sum(estimation)) as estimation from variables_estimations where date(timestamp)='2015-07-10' and extract(hour from timestamp) between 10 and 24 group by v_id, variable order by estimation ;
 */
 
 -- creando funciones para acceder a las mediciones 
 -- por sensor y pares de sensores
--- function to access meassurements by sensor to build complex queries using expression languand through php parsing
-create or replace function meassures_sensor(sensor character varying)
+-- function to access measurements by sensor to build complex queries using expression languand through php parsing
+create or replace function measures_sensor(sensor character varying)
 returns
-table (s_ch int, "timestamp" timestamp, meassure numeric)
+table (s_ch int, "timestamp" timestamp, measure numeric)
 as $$
-  select s_ch, timestamp, corrected as meassure
-  from meassures
+  select s_ch, timestamp, corrected as measure
+  from measures
   where 's_'||(s_id::character varying)=$1
 $$
 language sql
@@ -196,7 +196,7 @@ stable
 ;
 
 -- función para saber la jornada correspondiente a la estimación de una variable (para jornadas que se extienden después de las 24hs)
-create or replace function working_day(meassure_time timestamp, v_id integer) --para saber la jornada laboral
+create or replace function working_day(measure_time timestamp, v_id integer) --para saber la jornada laboral
 returns date
 as $$
   select 
@@ -224,7 +224,7 @@ group by working_day(timestamp,v_id)
 order by working_day(timestamp,v_id)
 ;
 
-select timestamp, meassure as ingresos
+select timestamp, measure as ingresos
 from variables_estimations
 where v_id=1 and working_day(timestamp,v_id)='2015-07-01'
 order by timestamp
@@ -263,7 +263,7 @@ order by working_hour_text(timestamp::time,v_id)
 
 -- buscar horas espureas
 select timestamp, s_id, s_ch, status
-from meassures
+from measures
 where date_trunc('hour', timestamp) != timestamp
 order by timestamp, s_id, s_ch 
 ;
@@ -292,7 +292,6 @@ language sql
 stable
 ;
 
-drop view variables_estimations_by_day;
 create view variables_estimations_by_day as
 select v_id, sum(estimation) as estimation, 
   date, day, day_of_week, day_colour as day_color
@@ -300,7 +299,7 @@ from variables_estimations
 join ftn_time_period
 on working_day(timestamp, v_id)=date
 where working_time(timestamp, v_id)
-group by v_id, date, day, day_of_week, day_colour as day_color
+group by v_id, date, day, day_of_week, day_colour 
 ;
 -- select * from variables_estimations_by_day limit 20;
 

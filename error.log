@@ -1,4 +1,69 @@
+main:
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "meassures" does not exist
+herman:
+psql:herman.sql:1: NOTICE:  drop cascades to 8 other objects
+DETAIL:  drop cascades to view herman.reportes
+drop cascades to function herman.leer_sensor(integer,integer,timestamp without time zone)
+drop cascades to function herman.leer_sensor(integer,date)
+drop cascades to function herman.leer_sensor(integer,date,date)
+drop cascades to function herman.actualizar_factor_sensor(integer,integer,numeric,timestamp without time zone)
+drop cascades to function herman.calcular_variable(integer,timestamp without time zone)
+drop cascades to function herman.calcular_variable(integer,date,date)
+drop cascades to function herman.calcular_variable(integer,date)
+ comments
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "variables_sensors_accesses" does not exist
+ERROR:  relation "variables_sensors_accesses" does not exist
+ERROR:  relation "variables_sensors_branches" does not exist
+ERROR:  relation "variables_sensors_branches" does not exist
+ERROR:  relation "variables_sensors_companies" does not exist
+ERROR:  relation "variables_sensors_companies" does not exist
 cristian:
+psql:cristian.sql:2: ERROR:  schema "backup" already exists
+psql:cristian.sql:3: ERROR:  schema "cristian" already exists
+psql:cristian.sql:4: ERROR:  table "log" does not exist
+psql:cristian.sql:11: ERROR:  relation "variables_corregidas" already exists
+psql:cristian.sql:19: ERROR:  relation "mediciones_corregidas" already exists
+psql:cristian.sql:30: NOTICE:  CREATE TABLE will create implicit sequence "mediciones_sensor_id_seq" for serial column "mediciones_sensor.id"
+psql:cristian.sql:30: ERROR:  relation "mediciones_sensor" already exists
+psql:cristian.sql:40: NOTICE:  CREATE TABLE will create implicit sequence "mediciones_urbixcam_id_seq" for serial column "mediciones_urbixcam.id"
+psql:cristian.sql:40: ERROR:  relation "mediciones_urbixcam" already exists
+psql:cristian.sql:54: NOTICE:  CREATE TABLE will create implicit sequence "mediciones_accesos_id_seq1" for serial column "mediciones_accesos.id"
+psql:cristian.sql:54: ERROR:  relation "mediciones_accesos" already exists
+psql:cristian.sql:57: ERROR:  relation "mediciones_sensor" already exists
+psql:cristian.sql:58: ERROR:  relation "mediciones_urbixcam" already exists
+psql:cristian.sql:59: ERROR:  relation "mediciones_accesos" already exists
+psql:cristian.sql:60: ERROR:  relation "variables_fixed" already exists
+psql:cristian.sql:74: NOTICE:  view "meassures" does not exist, skipping
+psql:cristian.sql:75: NOTICE:  view "measures" does not exist, skipping
+psql:cristian.sql:76: NOTICE:  view "sensors" does not exist, skipping
+psql:cristian.sql:77: NOTICE:  view "sensors_factors" does not exist, skipping
+psql:cristian.sql:78: NOTICE:  view "variables_factors" does not exist, skipping
+psql:cristian.sql:79: NOTICE:  view "variables_estimations" does not exist, skipping
+psql:cristian.sql:197: NOTICE:  function imputar_variable(pg_catalog.int4,pg_catalog.timestamp,pg_catalog.numeric) does not exist, skipping
+ comments
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "meassures" does not exist
+ERROR:  relation "meassures" does not exist
 ERROR:  relation "variables_sensors_accesses" does not exist
 ERROR:  relation "variables_sensors_accesses" does not exist
 ERROR:  relation "variables_sensors_branches" does not exist

@@ -1,3 +1,4 @@
+drop schema calibracion cascade;
 create schema calibracion;
 
 CREATE OR REPLACE FUNCTION array_median(numeric[])
