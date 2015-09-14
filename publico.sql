@@ -2,6 +2,10 @@ begin;
 drop schema if exists publico cascade;
 create schema publico;
 set search_path to publico;
+grant usage on schema certificacion to herman;
+grant usage on schema certificacion to cristian;
+grant execute on all functions in schema certificacion to herman;
+grant execute on all functions in schema certificacion to cristian;
 
 -- crear indices necesarios para que el cálculo de las variables sea eficiente:
 drop index if exists urbix.bkn_measure_sensor_id;
