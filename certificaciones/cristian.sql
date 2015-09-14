@@ -20,7 +20,20 @@ stable language sql
 ;
 grant execute on function eventos_por_cam(idcamara integer, desde timestamp, hasta timestamp) to cristian;
 comment on function eventos_por_cam(idcamara integer, desde timestamp, hasta timestamp)
-  is 'devuelve la lista de eventos de la cámara entre los timestamp especificados';
+  is 'devuelve la lista de eventos registrados por la cámara entre los timestamp especificados';
+
+create or replace function contar_eventos_por_cam(idcamara integer, desde timestamp, hasta timestamp)
+returns numeric as $$
+select count(*) from eventos_por_cam($1, $2, $3)
+$$
+security definer
+stable language sql
+;
+grant execute on function contar_eventos_por_cam(idcamara integer, desde timestamp, hasta timestamp) to cristian;
+comment on function contar_eventos_por_cam(idcamara integer, desde timestamp, hasta timestamp)
+  is 'devuelve la cantidad de eventos registrados por la cámara entre los timestamp especificados';
+
+
 
 create or replace function eventos_por_cam(idcamara integer, desde timestamp, sincro interval, hasta timestamp) 
 returns table (idcamara integer, idbox integer, "timestamp" timestamp with time zone, alias text, box text) as $$
@@ -30,15 +43,17 @@ select idcamara, idbox
 from eventos
 join boxes on idbox = boxes.id
 where idcamara = $1
-and extract(epoch from ($4::timestamp with time zone + $3)) <= eventos.evento
+and extract(epoch from ($2::timestamp with time zone + $3)) <= eventos.evento
 and eventos.evento <= extract(epoch from ($4::timestamp with time zone + $3))
 order by timestamp 
 $$
+security definer
 stable language sql
 ;
 grant execute on function eventos_por_cam(idcamara integer, desde timestamp, sincro interval, hasta timestamp) to cristian;
 comment on function eventos_por_cam(idcamara integer, desde timestamp, sincro interval, hasta timestamp)
-  is 'devuelve la lista de eventos de la cámara entre los timestamp especificados usando un intervalo de sincronización';
+  is 'devuelve la lista de eventos registrados por la cámara entre los timestamp especificados usando un intervalo de sincronización: 
+      timestamp_camara + sincro = timestamp_pantalla_de_conteo (verificar!)';
 
 
 

@@ -36,25 +36,36 @@ cristian:
 psql:cristian.sql:2: ERROR:  schema "backup" already exists
 psql:cristian.sql:3: ERROR:  schema "cristian" already exists
 psql:cristian.sql:4: ERROR:  table "log" does not exist
-psql:cristian.sql:11: ERROR:  relation "variables_corregidas" already exists
-psql:cristian.sql:19: ERROR:  relation "mediciones_corregidas" already exists
-psql:cristian.sql:30: NOTICE:  CREATE TABLE will create implicit sequence "mediciones_sensor_id_seq" for serial column "mediciones_sensor.id"
-psql:cristian.sql:30: ERROR:  relation "mediciones_sensor" already exists
-psql:cristian.sql:40: NOTICE:  CREATE TABLE will create implicit sequence "mediciones_urbixcam_id_seq" for serial column "mediciones_urbixcam.id"
-psql:cristian.sql:40: ERROR:  relation "mediciones_urbixcam" already exists
-psql:cristian.sql:54: NOTICE:  CREATE TABLE will create implicit sequence "mediciones_accesos_id_seq1" for serial column "mediciones_accesos.id"
-psql:cristian.sql:54: ERROR:  relation "mediciones_accesos" already exists
-psql:cristian.sql:57: ERROR:  relation "mediciones_sensor" already exists
-psql:cristian.sql:58: ERROR:  relation "mediciones_urbixcam" already exists
-psql:cristian.sql:59: ERROR:  relation "mediciones_accesos" already exists
-psql:cristian.sql:60: ERROR:  relation "variables_fixed" already exists
-psql:cristian.sql:74: NOTICE:  view "meassures" does not exist, skipping
-psql:cristian.sql:75: NOTICE:  view "measures" does not exist, skipping
-psql:cristian.sql:76: NOTICE:  view "sensors" does not exist, skipping
-psql:cristian.sql:77: NOTICE:  view "sensors_factors" does not exist, skipping
-psql:cristian.sql:78: NOTICE:  view "variables_factors" does not exist, skipping
-psql:cristian.sql:79: NOTICE:  view "variables_estimations" does not exist, skipping
-psql:cristian.sql:197: NOTICE:  function imputar_variable(pg_catalog.int4,pg_catalog.timestamp,pg_catalog.numeric) does not exist, skipping
+psql:cristian.sql:13: ERROR:  relation "variables_corregidas" already exists
+psql:cristian.sql:26: ERROR:  relation "mediciones_corregidas" already exists
+psql:cristian.sql:40: NOTICE:  CREATE TABLE will create implicit sequence "mediciones_sensor_id_seq" for serial column "mediciones_sensor.id"
+psql:cristian.sql:40: ERROR:  relation "mediciones_sensor" already exists
+psql:cristian.sql:50: NOTICE:  CREATE TABLE will create implicit sequence "mediciones_urbixcam_id_seq" for serial column "mediciones_urbixcam.id"
+psql:cristian.sql:50: ERROR:  relation "mediciones_urbixcam" already exists
+psql:cristian.sql:64: NOTICE:  CREATE TABLE will create implicit sequence "mediciones_accesos_id_seq1" for serial column "mediciones_accesos.id"
+psql:cristian.sql:64: ERROR:  relation "mediciones_accesos" already exists
+psql:cristian.sql:67: ERROR:  relation "mediciones_sensor" already exists
+psql:cristian.sql:68: ERROR:  relation "mediciones_urbixcam" already exists
+psql:cristian.sql:69: ERROR:  relation "mediciones_accesos" already exists
+psql:cristian.sql:70: ERROR:  relation "variables_fixed" already exists
+psql:cristian.sql:71: ERROR:  relation "measures_fixed" already exists
+psql:cristian.sql:75: ERROR:  each EXCEPT query must have the same number of columns
+LINE 1: ...from cristian.mediciones_corregidas except select * from bac...
+                                                             ^
+psql:cristian.sql:76: ERROR:  each EXCEPT query must have the same number of columns
+LINE 1: ... from cristian.variables_corregidas except select * from bac...
+                                                             ^
+psql:cristian.sql:84: NOTICE:  view "meassures" does not exist, skipping
+psql:cristian.sql:85: NOTICE:  view "measures" does not exist, skipping
+psql:cristian.sql:86: NOTICE:  view "sensors" does not exist, skipping
+psql:cristian.sql:87: NOTICE:  view "sensors_factors" does not exist, skipping
+psql:cristian.sql:88: NOTICE:  view "variables" does not exist, skipping
+psql:cristian.sql:89: NOTICE:  view "variables_factors" does not exist, skipping
+psql:cristian.sql:90: NOTICE:  view "variables_estimations" does not exist, skipping
+psql:cristian.sql:91: NOTICE:  view "variables_accesses" does not exist, skipping
+psql:cristian.sql:209: NOTICE:  function imputar_variable(pg_catalog.int4,pg_catalog.timestamp,pg_catalog.numeric) does not exist, skipping
+psql:cristian.sql:210: NOTICE:  function fijar_variable(pg_catalog.int4,pg_catalog.timestamp,pg_catalog.numeric) does not exist, skipping
+psql:cristian.sql:243: NOTICE:  function fijar_medicion(pg_catalog.int4,pg_catalog.int4,pg_catalog.timestamp,pg_catalog.numeric) does not exist, skipping
  comments
 ERROR:  relation "meassures" does not exist
 ERROR:  relation "meassures" does not exist
@@ -64,9 +75,12 @@ ERROR:  relation "meassures" does not exist
 ERROR:  relation "meassures" does not exist
 ERROR:  relation "meassures" does not exist
 ERROR:  relation "meassures" does not exist
+ERROR:  relation "variables_formulas" does not exist
 ERROR:  relation "variables_sensors_accesses" does not exist
 ERROR:  relation "variables_sensors_accesses" does not exist
 ERROR:  relation "variables_sensors_branches" does not exist
 ERROR:  relation "variables_sensors_branches" does not exist
 ERROR:  relation "variables_sensors_companies" does not exist
 ERROR:  relation "variables_sensors_companies" does not exist
+ERROR:  relation "variables_sensors" does not exist
+certificaciones:

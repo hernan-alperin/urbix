@@ -192,6 +192,20 @@ comment on function calcular_variable(v_id integer, fecha date)
   is 'calcula el valor de una variable para una fecha dada. devuelve una tabla';
 commit;
                                      
+begin;
+create or replace function reporte_del_dia(fecha date) 
+returns setof system_state as $$
+select * from private.system_states_balanced(1,40,$1)
+$$
+language sql
+security definer
+stable
+;
+grant execute on function reporte_del_dia(fecha date) to herman;
+comment on function reporte_del_dia(fecha date)
+  is 'devuelve una tabla con los ingresos, egresos y ocupación del día';
+commit;
+
 
 
 

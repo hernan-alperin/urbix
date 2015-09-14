@@ -7,16 +7,26 @@ create table cristian.variables_corregidas (
   timestamp timestamp,
   original_value numeric,
   new_value numeric,
-  when_modified timestamp
+  when_modified timestamp,
+  who_modified character varying,
+  observaciones character varying
 );
+grant select on cristian.variables_corregidas to cristian; 
+comment on table cristian.variables_corregidas 
+  is 'tabla con las correcciones de las variables, imputación de datos cuando el valor calculado no es confiable';
 create table cristian.mediciones_corregidas (
   s_id integer,
   s_ch integer,
   timestamp timestamp,
   original_value numeric,
   new_value numeric,
-  when_modified timestamp
+  when_modified timestamp,
+  who_modified character varying,
+  observaciones character varying
 );
+grant select on cristian.mediciones_corregidas to cristian;
+comment on table cristian.mediciones_corregidas
+  is 'tabla con las correcciones de las mediciones de los sensores, imputación de datos cuando la medición no fue confiable';
 create table cristian.mediciones_sensor(
     id serial,
     s_id integer,
@@ -75,8 +85,10 @@ drop view if exists cristian.meassures cascade;
 drop view if exists cristian.measures cascade;
 drop view if exists cristian.sensors cascade;
 drop view if exists cristian.sensors_factors cascade;
+drop view if exists cristian.variables cascade;
 drop view if exists cristian.variables_factors cascade;
 drop view if exists cristian.variables_estimations cascade;
+drop view if exists cristian.variables_accesses;
 
 create view cristian.measures as 
 select measures.s_id, sensor, measures.s_ch, measures.status, measures.timestamp, 
@@ -127,7 +139,7 @@ returns table(s_ch integer, "timestamp" timestamp, original numeric, value numer
 as $$
   select s_ch, timestamp, original, value, corrected
   from private.measures
-  where s_id=$1 and private.working_day(timestamp,$1)=$2 -- todo: chequear que esté ajustado a jornada laboral
+  where s_id=$1 and private.working_day(timestamp,$1)=$2 
   order by s_ch, timestamp
 $$
 language sql
@@ -196,38 +208,71 @@ comment on function calcular_variable(v_id integer, fecha date)
 
 drop function if exists imputar_variable(v_id integer, "timestamp" timestamp, valor numeric);
 drop function if exists fijar_variable(v_id integer, "timestamp" timestamp, valor numeric);
-create or replace function fijar_variable(v_id integer, "timestamp" timestamp, valor numeric)
-returns void
+drop function if exists fijar_variable(v_id integer, "timestamp" timestamp, valor numeric, observacion character varying);
+create or replace function fijar_variable(v_id integer, "timestamp" timestamp, valor numeric, observacion character varying)
+returns table (
+  v_id integer,
+  "timestamp" timestamp,
+  original_value numeric,
+  new_value numeric,
+  when_modified timestamp,
+  who_modified character varying,
+  observaciones character varying
+)
 as $$
-insert into cristian.variables_corregidas
-select $1, $2, estimation, $3, now()
-from private.variables_estimations
-where v_id=$1 and timestamp=$2;
-end;
+  insert into cristian.variables_corregidas
+  select $1, $2, estimation, $3, now(), 'cristian', $4
+  from private.variables_estimations
+  where v_id=$1 and timestamp=$2;
+  select * from cristian.variables_corregidas order by when_modified desc
 $$
-language sql
+volatile language sql
 security definer
 ;
-grant execute on function fijar_variable(v_id integer, "timestamp" timestamp, valor numeric) to cristian;
-comment on function fijar_variable(v_id integer, "timestamp" timestamp, valor numeric)
+grant execute on function fijar_variable(v_id integer, "timestamp" timestamp, valor numeric, observacion character varying) to cristian;
+comment on function fijar_variable(v_id integer, "timestamp" timestamp, valor numeric, observacion character varying)
   is 'corrige o imputa el valor de una variable para un timestamp dado';
 
+create view private.corrected_variables_estimations as
+select variable, v_id, timestamp
+  , case when new_value is null then estimation else new_value end as estimation
+from private.variables_estimations
+natural full join cristian.variables_corregidas
+;
+
 drop function if exists fijar_medicion(s_id integer, s_ch integer, "timestamp" timestamp, valor numeric);
-create or replace function fijar_medicion(s_id integer, s_ch integer, "timestamp" timestamp, valor numeric)
-returns void
+drop function if exists fijar_medicion(s_id integer, s_ch integer, "timestamp" timestamp, valor numeric, observacion character varying);
+create or replace function fijar_medicion(s_id integer, s_ch integer, "timestamp" timestamp, valor numeric, observacion character varying)
+returns table (
+  s_id integer,
+  s_ch integer,
+  "timestamp" timestamp,
+  original_value numeric,
+  new_value numeric,
+  when_modified timestamp,
+  who_modified character varying,
+  observaciones character varying
+)
 as $$
-insert into cristian.mediciones_corregidas
-select $1, $2, $3, value, $4, now()
-from private.measures
-where s_id=$1 and s_ch = $2 and timestamp=$3;
-end;
+  insert into cristian.mediciones_corregidas
+  select $1, $2, $3, value, $4, now(), 'cristian', $4
+  from private.measures
+  where s_id=$1 and s_ch = $2 and timestamp=$3;
+  select * from cristian.mediciones_corregidas order by when_modified desc
 $$
-language sql
+volatile language sql
 security definer
 ;
-grant execute on function fijar_medicion(s_id integer, s_ch integer, "timestamp" timestamp, valor numeric) to cristian;
-comment on function fijar_medicion(s_id integer, s_ch integer, "timestamp" timestamp, valor numeric)
+grant execute on function fijar_medicion(s_id integer, s_ch integer, "timestamp" timestamp, valor numeric, observacion character varying) to cristian;
+comment on function fijar_medicion(s_id integer, s_ch integer, "timestamp" timestamp, valor numeric, observacion character varying)
   is 'corrige o imputa el valor de una medicion para un timestamp dado';
 commit;
+
+create view private.corrected_measures as
+select  timestamp, s_id, s_ch, original
+  , case when new_value is null then corrected else new_value end as corrected
+from measures
+natural full join cristian.mediciones_corregidas
+;
 
 

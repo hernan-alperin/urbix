@@ -21,11 +21,12 @@ begin
   from bkn_variable 
   where variable_id in ($1,$2);
   i := 0;
-  actual_time := opening_time;
+  actual_time := opening_time - '3 hours'::interval;
   previous_occupation := 0;
   while (actual_time < ending_time)
   loop
-    select i, incoming.actual_time, incoming, outgoing, incoming - outgoing + previous_occupation as occupation into system_state
+    select i, incoming.actual_time, round(incoming), round(outgoing)
+      , round(incoming) - round(outgoing) + previous_occupation as occupation into system_state
     from (
       select actual_time, estimation as incoming
       from variables_estimations
@@ -43,9 +44,9 @@ begin
 end;
 $$
 language plpgsql
+security definer
 ;
-select * from system_states(51,52,'2015-07-15')
-;
+--select * from system_states(51,52,'2015-07-15') ;
 
 drop function ocupacion(v_in integer, v_out integer, "timestamp" timestamp);
 create function ocupacion(v_in integer, v_out integer, "timestamp" timestamp)
@@ -65,8 +66,8 @@ end;
 $$
 language plpgsql
 ;
-select ocupacion(51,52,'2015-07-15 10:00');
-select ocupacion(51,52,'2015-07-15 9:00');
+--select ocupacion(51,52,'2015-07-15 10:00');
+--select ocupacion(51,52,'2015-07-15 9:00');
 
 drop function desbalance(v_in integer, v_out integer, "date" date);
 create function desbalance(v_in integer, v_out integer, "date" date)
@@ -79,9 +80,5 @@ limit 1
 $$
 language sql
 ;
-
-select desbalance(51,52,'2015-07-15');
-
-select dia, desbalance(51,52,dia) as desbalance from (select distinct timestamp::date as dia from variables_estimations order by timestamp::date) as dias order by desbalance;
-
-
+--select desbalance(51,52,'2015-07-15');
+--select dia, desbalance(51,52,dia) as desbalance from (select distinct timestamp::date as dia from variables_estimations order by timestamp::date) as dias order by desbalance;

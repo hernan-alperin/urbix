@@ -1,7 +1,12 @@
 drop schema certificaciones cascade;
 create schema certificaciones;
 set search_path to certificaciones, private, urbix;
+grant usage on schema certificaciones to herman;
+grant usage on schema certificaciones to cristian;
+grant execute on all functions in schema certificaciones to herman;
+grant execute on all functions in schema certificaciones to cristian;
 
+-- mover tablas de vistas de cristian a schema certificaciones
 create or replace view sampling as
 select id, s_id, 1 as s_ch, fecha + hora as timestamp, intervalo*60 as minutos, sensor_in as sensor, manual_in as manual
 from cristian.mediciones_sensor
@@ -14,10 +19,13 @@ from cristian.mediciones_urbixcam
 ;
 
 create or replace view sample as
-select id, s_id, s_ch,
-  sensor/extract('minutes' from minutos)::numeric as s_i, manual/extract('minutes' from minutos)::numeric as p_i
+select id, s_id, s_ch, sensors.sensor,
+  sampling.sensor/extract('minutes' from minutos)::numeric as s_i, manual/extract('minutes' from minutos)::numeric as p_i
 from sampling
+join private.sensors
+using (s_id)
 ;
+grant select on sample to herman;
 
 create or replace function round(double precision, integer) returns numeric 
 as $$ select round($1::numeric, $2) $$ immutable language sql;
@@ -39,7 +47,7 @@ natural join params
 group by s_id, s_ch, grain
 order by s_id, s_ch
 ;
-select * from sample_inside_quality;
+--select * from sample_inside_quality;
 
 create or replace function under(numeric, numeric) returns numeric
 as $$ select case when $1 < $2 then $2 - $1 else null end $$ immutable language sql;
@@ -60,6 +68,7 @@ select s_id, s_ch
 from sample_inside_quality
 natural join measures
 natural join params
+where original > 3/60
 group by s_id, s_ch, minutes
 order by s_id, s_ch
 ;
@@ -67,13 +76,27 @@ order by s_id, s_ch
 
 drop view if exists sample_quality;
 create or replace view sample_quality as
-select *
+select *, 
+  case 
+    when (sample_inside_quality.size < 16 or sample_representativeness.over > 20 or sample_representativeness.under > 30) 
+      then 
+        case 
+          when (sample_inside_quality.size < 16) then ('faltan '||16 - size||' mediciones')
+          else ('faltan mediciones')
+        end
+    when (sample_representativeness.over > 20 and sample_representativeness.under > 30) 
+      then (' con caudales por arriba de '||top||' y por abajo de '||bottom||' personas por minuto.')
+    when (sample_representativeness.over > 20) then (' con caudales por arriba de '||top||' personas por minuto.') 
+    when (sample_representativeness.under > 30) then (' con caudales por abajo de '||bottom||' personas por minuto.')
+    else 'ok'
+  end as certificado
 from sample_inside_quality
 natural join sample_representativeness
 ;
+grant select on sample_quality to herman;
+grant select on sample_quality to cristian;
+comment on view sample_quality is 'medidas de calidad de la muestra';
+comment on column sample_quality.size is 'tamaño de la muestra';
 
-select * from sample_quality;
 
-
-
-
+--select * from sample_quality;

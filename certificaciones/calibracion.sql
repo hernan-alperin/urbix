@@ -1,5 +1,6 @@
 drop schema calibracion cascade;
 create schema calibracion;
+set search_path to calibracion;
 
 CREATE OR REPLACE FUNCTION array_median(numeric[])
   RETURNS numeric AS
@@ -79,4 +80,5 @@ select avg(p_j)/avg(s_j) as b from subsample_i_with_0($1, $2, $3, $4)
 $$
 language sql
 ;
+
 
