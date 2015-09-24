@@ -1,6 +1,6 @@
 drop schema if exists herman cascade;
 create schema authorization herman;
-set search_path to herman, private;
+set search_path to herman, dynamic;
 
 create view measures as select * from measures;
 create view sensors as select * from sensors;
@@ -25,22 +25,25 @@ grant select on reportes to herman;
 
 
 begin;
-create or replace function actualizar_factor_sensor(s_id integer, s_ch integer, factor_nuevo numeric, desde timestamp)
+drop function if exists actualizar_factor_sensor(integer, integer, numeric, timestamp without time zone);
+drop function if exists actualizar_factor_sensor(s_id integer, s_ch integer, factor_nuevo numeric, desde timestamp, comentario character varying);
+create or replace function actualizar_factor_sensor(s_id integer, s_ch integer, factor_nuevo numeric, desde timestamp, comentario character varying)
 -- s_id sensor_id
 -- s_ch sensor chanel o type_code en geeral 1=in 2=out
 returns 
  table (s_id integer, s_ch integer, factor numeric, start_date date, end_date date)
 as $$
   update urbix.bkn_sensor_factor set end_date = $4 where sensor_id=$1 and type_code=$2 and end_date is null;
-  insert into urbix.bkn_sensor_factor (sensor_id, type_code, factor_value, start_date, end_date) values ($1, $2, $3, $4, null);
+  delete from urbix.bkn_sensor_factor where end_date = start_date;
+  insert into urbix.bkn_sensor_factor (sensor_id, type_code, factor_value, start_date, end_date, "comment") values ($1, $2, $3, $4, null, $5);
   select sensor_id, type_code, factor_value, start_date, end_date from urbix.bkn_sensor_factor
 $$
 language sql
 security definer
 volatile
 ;
-grant execute on function actualizar_factor_sensor(s_id integer, s_ch integer, factor_nuevo numeric, desde timestamp) to herman;
-comment on function actualizar_factor_sensor(s_id integer, s_ch integer, factor_nuevo numeric, desde timestamp)
+grant execute on function actualizar_factor_sensor(s_id integer, s_ch integer, factor_nuevo numeric, desde timestamp, comentario character varying) to herman;
+comment on function actualizar_factor_sensor(s_id integer, s_ch integer, factor_nuevo numeric, desde timestamp, comentario character varying)
   is 'actualiza el factor para un sensor en un canal a partir de la fecha indicada';
 commit;
 
@@ -57,7 +60,7 @@ create or replace function leer_sensor(s_id integer, s_ch integer, "timestamp" t
 returns numeric
 as $$
   select corrected 
-  from private.measures
+  from dynamic.measures
   where s_id=$1 and s_ch=$2 and "timestamp"=$3::timestamp
 $$
 language sql
@@ -78,8 +81,8 @@ create or replace function leer_sensor(s_id integer, fecha date)
 returns table(s_ch integer, "timestamp" timestamp, lectura numeric)
 as $$
   select s_ch, timestamp, corrected
-  from private.measures
-  where s_id=$1 and private.working_day(timestamp,$1)=$2 -- todo: chequear que esté ajustado a jornada laboral
+  from dynamic.measures
+  where s_id=$1 and dynamic.working_day(timestamp,$1)=$2 -- todo: chequear que esté ajustado a jornada laboral
   order by s_ch, timestamp
 $$
 language sql
@@ -98,8 +101,8 @@ create or replace function leer_sensor(s_id integer, desde date, hasta date)
 returns table(s_ch integer, "timestamp" timestamp, lectura numeric)
 as $$
   select s_ch, timestamp, corrected
-  from private.measures
-  where s_id=$1 and private.working_day(timestamp,$1) between $2 and $3 -- todo: chequear que esté ajustado a jornada laboral
+  from dynamic.measures
+  where s_id=$1 and dynamic.working_day(timestamp,$1) between $2 and $3 -- todo: chequear que esté ajustado a jornada laboral
   order by s_ch, timestamp
 $$
 language sql
@@ -120,7 +123,7 @@ create or replace function calcular_variable(v_id integer, "timestamp" timestamp
 returns numeric
 as $$
   select estimation 
-  from private.variables_estimations
+  from dynamic.variables_estimations
   where v_id=$1 and "timestamp"=$2::timestamp
 $$
 language sql
@@ -139,8 +142,8 @@ create or replace function calcular_variable(v_id integer, fecha date)
 returns table("timestamp" timestamp, calculo numeric)
 as $$
   select timestamp, estimation
-  from private.variables_estimations
-  where v_id=$1 and private.working_day(timestamp,$1)=$2 -- todo: chequear que esté ajustado a jornada laboral
+  from dynamic.variables_estimations
+  where v_id=$1 and dynamic.working_day(timestamp,$1)=$2 -- todo: chequear que esté ajustado a jornada laboral
   order by timestamp
 $$
 language sql
@@ -159,8 +162,8 @@ create or replace function calcular_variable(v_id integer, desde date, hasta dat
 returns table("timestamp" timestamp, calculo numeric)
 as $$
   select timestamp, estimation
-  from private.variables_estimations
-  where v_id=$1 and private.working_day(timestamp,$1) between $2 and $3 -- todo: chequear que esté ajustado a jornada laboral
+  from dynamic.variables_estimations
+  where v_id=$1 and dynamic.working_day(timestamp,$1) between $2 and $3 -- todo: chequear que esté ajustado a jornada laboral
   order by timestamp
 $$
 language sql
@@ -179,8 +182,8 @@ create or replace function calcular_variable(v_id integer, fecha date)
 returns table("timestamp" timestamp, calculo numeric)
 as $$
   select timestamp, estimation
-  from private.variables_estimations
-  where v_id=$1 and private.working_day(timestamp,$1)=$2 -- todo: chequear que esté ajustado a jornada laboral
+  from dynamic.variables_estimations
+  where v_id=$1 and dynamic.working_day(timestamp,$1)=$2 -- todo: chequear que esté ajustado a jornada laboral
   order by timestamp
 $$
 language sql
@@ -195,7 +198,7 @@ commit;
 begin;
 create or replace function reporte_del_dia(fecha date) 
 returns setof system_state as $$
-select * from private.system_states_balanced(1,40,$1)
+select * from dynamic.system_states_balanced(1,40,$1)
 $$
 language sql
 security definer

@@ -15,13 +15,16 @@ create index bkn_measure_time_hour on urbix.bkn_measure (date_part('hour',measur
 -- view measures para tener acceso dinámico a las mediciones.
 create view measures as
 select sensor_id as s_id, type_code as s_ch, status, 
-  measure_time as timestamp, original_value as original, value, original_value*factor_value as corrected
+  measure_time as timestamp, original_value as original, value, 
+  original_value*(case when factor_value is null then 1 else factor_value end) as corrected
 from urbix.bkn_measure 
 natural join urbix.bkn_measure_data
-join urbix.bkn_sensor_factor
+left join urbix.bkn_sensor_factor
 using (sensor_id, type_code)
 where measure_time between start_date and end_date 
-or start_date <= measure_time and end_date is null
+or start_date <= measure_time and end_date is null -- (?) hace falta o la lines siguien lo subsume, dejémoslo para clarificar.
+
+or end_date is null -- caso que no exista registro
 ;
 -- ejemplo: select * from measures where date(timestamp)='2015-06-22' order by timestamp, s_id, s_ch ;
 

@@ -1,4 +1,4 @@
-set search_path to herman, private; 
+set search_path to herman, dynamic; 
 
 begin;
 drop function if exists actualizar_factor_sensor(s_id integer, s_ch integer, factor_nuevo numeric, desde timestamp);
@@ -35,7 +35,7 @@ create or replace function leer_sensor(s_id integer, s_ch integer, "timestamp" t
 returns numeric
 as $$
   select corrected 
-  from private.meassures
+  from dynamic.measures
   where s_id=$1 and s_ch=$2 and "timestamp"=$3::timestamp
 $$
 language sql
@@ -57,8 +57,8 @@ create or replace function leer_sensor(s_id integer, fecha date)
 returns table(s_ch integer, "timestamp" timestamp, lectura numeric)
 as $$
   select s_ch, timestamp, corrected
-  from private.meassures
-  where s_id=$1 and private.working_day(timestamp,$1)=$2 -- todo: chequear que esté ajustado a jornada laboral
+  from dynamic.measures
+  where s_id=$1 and dynamic.working_day(timestamp,$1)=$2 -- todo: chequear que esté ajustado a jornada laboral
   order by s_ch, timestamp
 $$
 language sql
@@ -78,8 +78,8 @@ create or replace function leer_sensor(s_id integer, desde date, hasta date)
 returns table(s_ch integer, "timestamp" timestamp, lectura numeric)
 as $$
   select s_ch, timestamp, corrected
-  from private.meassures
-  where s_id=$1 and private.working_day(timestamp,$1) between $2 and $3 -- todo: chequear que esté ajustado a jornada laboral
+  from dynamic.measures
+  where s_id=$1 and dynamic.working_day(timestamp,$1) between $2 and $3 -- todo: chequear que esté ajustado a jornada laboral
   order by s_ch, timestamp
 $$
 language sql
@@ -101,7 +101,7 @@ create or replace function calcular_variable(v_id integer, "timestamp" timestamp
 returns numeric
 as $$
   select estimation 
-  from private.variables_estimations
+  from dynamic.variables_estimations
   where v_id=$1 and "timestamp"=$2::timestamp
 $$
 language sql
@@ -121,8 +121,8 @@ create or replace function calcular_variable(v_id integer, fecha date)
 returns table("timestamp" timestamp, calculo numeric)
 as $$
   select timestamp, estimation
-  from private.variables_estimations
-  where v_id=$1 and private.working_day(timestamp,$1)=$2 -- todo: chequear que esté ajustado a jornada laboral
+  from dynamic.variables_estimations
+  where v_id=$1 and dynamic.working_day(timestamp,$1)=$2 -- todo: chequear que esté ajustado a jornada laboral
   order by timestamp
 $$
 language sql
@@ -142,8 +142,8 @@ create or replace function calcular_variable(v_id integer, desde date, hasta dat
 returns table("timestamp" timestamp, calculo numeric)
 as $$
   select timestamp, estimation
-  from private.variables_estimations
-  where v_id=$1 and private.working_day(timestamp,$1) between $2 and $3 -- todo: chequear que esté ajustado a jornada laboral
+  from dynamic.variables_estimations
+  where v_id=$1 and dynamic.working_day(timestamp,$1) between $2 and $3 -- todo: chequear que esté ajustado a jornada laboral
   order by timestamp
 $$
 language sql
@@ -163,8 +163,8 @@ create or replace function calcular_variable(v_id integer, fecha date)
 returns table("timestamp" timestamp, calculo numeric)
 as $$
   select timestamp, estimation
-  from private.variables_estimations
-  where v_id=$1 and private.working_day(timestamp,$1)=$2 -- todo: chequear que esté ajustado a jornada laboral
+  from dynamic.variables_estimations
+  where v_id=$1 and dynamic.working_day(timestamp,$1)=$2 -- todo: chequear que esté ajustado a jornada laboral
   order by timestamp
 $$
 language sql

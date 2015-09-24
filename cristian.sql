@@ -1,8 +1,8 @@
 -- si es la primera vez que se corre se crean, si no da error ... por eso fuera del begin-commit
-create schema backup;  
 create schema authorization cristian;
 drop table cristian.log;
 create table cristian.variables_corregidas (
+  id serial,
   v_id integer,
   timestamp timestamp,
   original_value numeric,
@@ -11,10 +11,13 @@ create table cristian.variables_corregidas (
   who_modified character varying,
   observaciones character varying
 );
-grant select on cristian.variables_corregidas to cristian; 
+grant select on cristian.variables_corregidas to cristian;
+alter table cristian.variables_corregidas add column id serial;  -- si ya existía la tabla
+alter table cristian.variables_corregidas add primary key (id);  -- agrega clave principal para que se puedan borrar registros
 comment on table cristian.variables_corregidas 
   is 'tabla con las correcciones de las variables, imputación de datos cuando el valor calculado no es confiable';
 create table cristian.mediciones_corregidas (
+  id serial primary key,
   s_id integer,
   s_ch integer,
   timestamp timestamp,
@@ -25,6 +28,8 @@ create table cristian.mediciones_corregidas (
   observaciones character varying
 );
 grant select on cristian.mediciones_corregidas to cristian;
+alter table cristian.mediciones_corregidas add column id serial;  -- si ya existía la tabla
+alter table cristian.mediciones_corregidas add primary key (id);  -- agrega clave principal para que se puedan borrar registros
 comment on table cristian.mediciones_corregidas
   is 'tabla con las correcciones de las mediciones de los sensores, imputación de datos cuando la medición no fue confiable';
 create table cristian.mediciones_sensor(
@@ -63,23 +68,28 @@ create table cristian.mediciones_accesos (
     manual_out numeric
 );
 alter table cristian.mediciones_accesos owner to cristian;
+---- evitar repeticiones backup incremental
+begin;
+insert into backup.mediciones_sensor select * from cristian.mediciones_sensor except select * from backup.mediciones_sensor;
+insert into backup.mediciones_urbixcam select * from cristian.mediciones_urbixcam except select * from backup.mediciones_urbixcam;
+insert into backup.measures_fixed select * from cristian.mediciones_corregidas except select * from backup.measures_fixed;
+insert into backup.variables_fixed select * from cristian.variables_corregidas except select * from backup.variables_fixed;
+commit; --- si hay cambio de estructura no hace incremental
 ----
+drop schema backup cascade;
+create schema backup;
 create table backup.mediciones_sensor as select * from cristian.mediciones_sensor;
 create table backup.mediciones_urbixcam as select * from cristian.mediciones_urbixcam;
 create table backup.mediciones_accesos as select * from cristian.mediciones_accesos;
 create table backup.variables_fixed as select * from cristian.variables_corregidas;
 create table backup.measures_fixed as select * from cristian.mediciones_corregidas;
----- evitar repeticiones backup incremental
-insert into backup.mediciones_sensor select * from cristian.mediciones_sensor except select * from backup.mediciones_sensor;
-insert into backup.mediciones_urbixcam select * from cristian.mediciones_urbixcam except select * from backup.mediciones_urbixcam;
-insert into backup.measures_fixed select * from cristian.mediciones_corregidas except select * from backup.measures_fixed;
-insert into backup.variables_fixed select * from cristian.variables_corregidas except select * from backup.variables_fixed;
 ----
+
 begin;
-set search_path to cristian, private;
+set search_path to cristian, dynamic;
 
 comment on schema cristian is 'schema para acceso de las necesidades del usuario cristian';
-set search_path to cristian, private;
+set search_path to cristian, dynamic;
 
 drop view if exists cristian.meassures cascade;
 drop view if exists cristian.measures cascade;
@@ -88,26 +98,27 @@ drop view if exists cristian.sensors_factors cascade;
 drop view if exists cristian.variables cascade;
 drop view if exists cristian.variables_factors cascade;
 drop view if exists cristian.variables_estimations cascade;
+drop view if exists cristian.corrected_variables_estimations cascade;
 drop view if exists cristian.variables_accesses;
 
 create view cristian.measures as 
 select measures.s_id, sensor, measures.s_ch, measures.status, measures.timestamp, 
   measures.original, measures.value, measures.corrected
-from private.measures
-natural join private.sensors;
-create view cristian.sensors as select * from private.sensors;
-create view cristian.sensors_factors as select * from private.sensors_factors;
-create view cristian.variables as select * from private.variables;
-create view cristian.variables_factors as select * from private.variables_factors;
-create view cristian.variables_estimations as select * from private.variables_estimations;
-create view cristian.variables_accesses as select * from private.variables_accesses;
+from dynamic.measures
+natural join dynamic.sensors;
+create view cristian.sensors as select * from dynamic.sensors;
+create view cristian.sensors_factors as select * from dynamic.sensors_factors;
+create view cristian.variables as select * from dynamic.variables;
+create view cristian.variables_factors as select * from dynamic.variables_factors;
+create view cristian.corrected_variables_estimations as select * from dynamic.variables_estimations;
+create view cristian.variables_accesses as select * from dynamic.variables_accesses;
 
 grant select on cristian.measures to cristian;
 grant select on cristian.sensors to cristian;
 grant select on cristian.sensors_factors to cristian;
 grant select on cristian.variables to cristian;
 grant select on cristian.variables_factors to cristian;
-grant select on cristian.variables_estimations to cristian;
+grant select on cristian.corrected_variables_estimations to cristian;
 grant select on cristian.variables_accesses to cristian;
 
 drop function if exists leer_sensor(s_id integer, s_ch integer, "timestamp" timestamp);
@@ -118,7 +129,7 @@ create or replace function leer_sensor(s_id integer, s_ch integer, "timestamp" t
 returns record 
 as $$
   select original, value, corrected
-  from private.measures
+  from dynamic.measures
   where s_id=$1 and s_ch=$2 and "timestamp"=$3::timestamp
 $$
 language sql
@@ -138,8 +149,8 @@ create or replace function leer_sensor(s_id integer, fecha date)
 returns table(s_ch integer, "timestamp" timestamp, original numeric, value numeric, corrected numeric)
 as $$
   select s_ch, timestamp, original, value, corrected
-  from private.measures
-  where s_id=$1 and private.working_day(timestamp,$1)=$2 
+  from dynamic.measures
+  where s_id=$1 and dynamic.working_day(timestamp,$1)=$2 
   order by s_ch, timestamp
 $$
 language sql
@@ -157,8 +168,8 @@ create or replace function leer_sensor(s_id integer, desde date, hasta date)
 returns table(s_ch integer, "timestamp" timestamp, original numeric, value numeric, corrected numeric)
 as $$
   select s_ch, timestamp, original, value, corrected
-  from private.measures
-  where s_id=$1 and private.working_day(timestamp,$1) between $2 and $3 -- todo: chequear que esté ajustado a jornada laboral
+  from dynamic.measures
+  where s_id=$1 and dynamic.working_day(timestamp,$1) between $2 and $3 -- todo: chequear que esté ajustado a jornada laboral
   order by s_ch, timestamp
 $$
 language sql
@@ -176,7 +187,7 @@ create or replace function calcular_variable(v_id integer, "timestamp" timestamp
 returns numeric
 as $$
   select estimation
-  from private.variables_estimations
+  from dynamic.variables_estimations
   where v_id=$1 and "timestamp"=$2::timestamp
 $$
 language sql
@@ -194,8 +205,8 @@ create or replace function calcular_variable(v_id integer, fecha date)
 returns table("timestamp" timestamp, calculo numeric)
 as $$
   select timestamp, estimation
-  from private.variables_estimations
-  where v_id=$1 and private.working_day(timestamp,$1)=$2 -- todo: chequear que esté ajustado a jornada laboral
+  from dynamic.variables_estimations
+  where v_id=$1 and dynamic.working_day(timestamp,$1)=$2 -- todo: chequear que esté ajustado a jornada laboral
   order by timestamp
 $$
 language sql
@@ -220,11 +231,11 @@ returns table (
   observaciones character varying
 )
 as $$
-  insert into cristian.variables_corregidas
+  insert into cristian.variables_corregidas (v_id, timestamp, original_value, new_value, when_modified, who_modified, observaciones)
   select $1, $2, estimation, $3, now(), 'cristian', $4
-  from private.variables_estimations
+  from dynamic.variables_estimations
   where v_id=$1 and timestamp=$2;
-  select * from cristian.variables_corregidas order by when_modified desc
+  select v_id, timestamp, original_value, new_value, when_modified, who_modified, observaciones from cristian.variables_corregidas order by when_modified asc
 $$
 volatile language sql
 security definer
@@ -233,10 +244,10 @@ grant execute on function fijar_variable(v_id integer, "timestamp" timestamp, va
 comment on function fijar_variable(v_id integer, "timestamp" timestamp, valor numeric, observacion character varying)
   is 'corrige o imputa el valor de una variable para un timestamp dado';
 
-create view private.corrected_variables_estimations as
+create or replace view dynamic.corrected_variables_estimations as
 select variable, v_id, timestamp
   , case when new_value is null then estimation else new_value end as estimation
-from private.variables_estimations
+from dynamic.variables_estimations
 natural full join cristian.variables_corregidas
 ;
 
@@ -254,11 +265,11 @@ returns table (
   observaciones character varying
 )
 as $$
-  insert into cristian.mediciones_corregidas
+  insert into cristian.mediciones_corregidas (s_id, s_ch, timestamp, original_value, new_value, when_modified, who_modified, observaciones)
   select $1, $2, $3, value, $4, now(), 'cristian', $4
-  from private.measures
+  from dynamic.measures
   where s_id=$1 and s_ch = $2 and timestamp=$3;
-  select * from cristian.mediciones_corregidas order by when_modified desc
+  select (s_id, s_ch, timestamp, original_value, new_value, when_modified, who_modified, observaciones) from cristian.mediciones_corregidas order by when_modified asc
 $$
 volatile language sql
 security definer
@@ -268,7 +279,7 @@ comment on function fijar_medicion(s_id integer, s_ch integer, "timestamp" times
   is 'corrige o imputa el valor de una medicion para un timestamp dado';
 commit;
 
-create view private.corrected_measures as
+create view dynamic.corrected_measures as
 select  timestamp, s_id, s_ch, original
   , case when new_value is null then corrected else new_value end as corrected
 from measures

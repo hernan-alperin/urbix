@@ -1,7 +1,8 @@
 begin;
 drop schema if exists private cascade;
-create schema private;
-set search_path to private, public, urbix;
+drop schema if exists dynamic cascade;
+create schema dynamic;
+set search_path to dynamic, public, urbix;
 
 -- crear indices necesarios para que el cálculo de las variables sea eficiente:
 drop index if exists urbix.bkn_measure_sensor_id;
