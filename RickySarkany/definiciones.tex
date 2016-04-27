@@ -1,0 +1,53 @@
+\section{Definiciones}
+
+Llamamos cluster a un conjunto de detecciones P-R de 
+una misma mac que asumimos que corresponden a una misma persona en una misma situación. 
+De esta forma se define como cluster una unidad compuesta por una 
+secuencia de P-R (pulsos) de una misma mac address, con 
+$t_1$, 
+mí­nimo intervalo de tiempo entre clusters o 
+máximo intervalo de tiempo entre pulsos, y 
+$t_2$, 
+máximo intervalo de tiempo entre pulsos o 
+mí­nimo tiempo de separación entre clusters. 
+Como consecuencia de esta definición, la longitud temporal de un cluster 
+es $\ge t_1$ y los intervalos entre clusters es $\ge t_2$.
+
+Definimos
+$f$, la proporción de personas que se detectan;
+$P$, la cantidad de personas en la zona de detección;
+$\alpha$ el error de tipo I, o falso positivo, que es la probabilidad
+de detectar un cluster que no corresponde a la variable en estudio;
+$\beta$ el error de tipo II, o falso negativo, que es la probabilidad
+no detectar un cluster que corresponde a la variable en estudio;
+$M$, la cantidad de clusters detectados,
+$M_c$, cantidad de macs diferentes que son consideradas para la determinación de los clusters de interés.
+$M\big|^p_t$ es la cantidad de clusters filtrados por potencia $p$ y tiempo de detección $t$
+
+\[
+M = M\big|^{p>-\infty}_{t\ge 0}
+\]
+
+\[
+M_c = M\big|^{p>\bar{p}}_{t\ge 0}
+\]
+
+\begin{equation}
+\bar{f} =
+\frac
+{
+M\big|
+^{p \ge \bar{p}}
+_{t \ge \bar{t}}
+}
+{C}
+\end{equation}
+
+es el mejor estimador de del factor $f$ de detección en el pasillo
+usando el mínimo error relativo excluyendo el 5\% superior e inferior de los casos
+Sea $f_i$ el factor calculado con el $i$-simo percentil de la muestra
+
+\[
+(1 - \alpha) P = (1 - \beta) f M
+\]
+
