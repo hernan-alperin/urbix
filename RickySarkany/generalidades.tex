@@ -1,0 +1,52 @@
+\section{Generalidades}
+Los sensores urbixCell-WiFi, a partir de ahora llamados nodos,
+se basan en la detección de paquetes WiFi.
+Cuando un celular tiene su sistema WiFi activo
+envía paquetes en forma periódica que pueden ser detectados 
+identificando la fuente o celular, mac address,
+identificador único de dada dispositivo que pueda ser conectado a una red.
+La periodicidad con la cual estos celulares
+enví­an estos paquetes depende de muchos factores como 
+la marca, el modelo, el nivel de batería, 
+la configuración del usuario, el uso de apps, y otros)
+A partir de esta información, que por el momento estamos reduciendo a solamente el caso de probe requests (P-R)
+cada nodo/sensor construye clusters con el objeto de
+comprimir la información y comenzar a definir entidades que tengan un sentido relacionado al movimiento peatonal.
+El análisis de la información adquirida por los nodos supone que
+hay una fracción $f_c$ de las personas que se quiere estudiar que
+tienen celulares con WiFi, una fracción $f_a$ de estos que cuentan con
+el sistema WiFi activo y enviando P-R, y una fracción $f_d$ de estos últimos que el nodo fue capaz de detectar
+dada la problemática.
+De esta forma, la proporción de personas que se detectan es:
+\[
+f = f_c \, f_a \, f_d
+\]
+Se busca conocer cual es la proporción de celulares detectados $f$
+y  comprender el impacto de los efectos abajo listados:
+\begin{enumerate}
+\item Problemática. La cantidad $f_d$ depende fuertemente del comportamiento peatonal.
+Es de esperar que en un entorno donde los peatonas pasan rápidamente (como puede ser un pasillo)
+$f_d$ será menor que en los casos donde la gente
+se quedó un largo tiempo como puede ser el caso de un restaurante.
+
+\item Layout de la locación. El efecto de las paredes y otros
+elementos que puedan tener influencia sobre la intensidad de la señal detectada
+
+\item Características del parque de celulares, $f_c$.
+
+\item El tipo y proporción de celulares $f_c$, como así el tipo de uso que
+se le da $f_a$ tendrá impacto en la proporción final de celulares detectados.
+
+\item Estacionalidad. Es importante evaluar si $f$
+presenta algún tipo de modulación estacional (horaria, diaria, semanal)
+que influya en $f_a$ o $f_c$.
+
+\item Variables demográficas $f_c$.
+\item Existencia de redes WiFi $f_a$ en la locación de estudio,
+ya que una vez que un celular está conectado a una red, este
+deja de enviar p-r
+\item Otros.
+\end{enumerate}
+
+En casos donde no se puede determinar se busca conocer las cotas y/u orden de magnitud de estas proporciones.
+
